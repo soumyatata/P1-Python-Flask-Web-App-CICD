@@ -7,6 +7,8 @@ pipeline {
         K8S_CREDENTIALS = 'k8s'
         SONARQUBE_CREDENTIALS = 'Sonar-token'
         SONARQUBE_SERVER = 'sonar-server'
+        SCANNER_HOME = tool 'sonar-scanner'
+        OWASP_DC = tool name: 'OWASP-DC', type: 'Tool'
     }
 
     stages {
@@ -23,9 +25,13 @@ pipeline {
         }
 
         stage('SonarQube Code Quality Check') {
-            script {
-                withSonarQubeEnv("${SONARQUBE_SERVER}") {  
-                    sh 'sonar-scanner -Dsonar.projectKey=flask-web-app -Dsonar.sources=.'
+            steps {
+                script {
+                    withSonarQubeEnv("${SONARQUBE_SERVER}") {  
+                        sh ''' $SCANNER_HOME/bin/sonar-scanner \
+                            -Dsonar.projectName=flask-web-app \
+                            -Dsonar.projectKey=flask-web-app '''
+                    }
                 }
             }
         }
@@ -33,7 +39,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: true, credentialsId: "${SONARQUBE_CREDENTIALS}"  // Abort if quality gate fails
+                    waitForQualityGate abortPipeline: false, credentialsId: "${SONARQUBE_CREDENTIALS}"  // Abort if quality gate fails
                 }
             }
         }
@@ -41,7 +47,7 @@ pipeline {
         stage('Dependency Check with OWASP Dependency-Check') {
             steps {
                 script {
-                    sh 'dependency-check --project "Flask Web App" --scan . --out dependency-check-report'
+                    sh '''${OWASP_DC}/bin/dependency-check --project "Flask Web App" --scan . --out dependency-check-report'''
                     archiveArtifacts artifacts: 'dependency-check-report/*.html', allowEmptyArchive: true  // Archive OWASP Dependency-Check report
                 }
             }

@@ -7,15 +7,16 @@ WORKDIR /app
 # Step 3: Copy the requirements.txt file from the src directory of the host to the /app directory inside the container
 COPY src/* . 
 
+# Step 4: Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Step 4: Install additional tools like Bandit and Safety
-RUN pip install bandit safety 
 
-# Step 5: Make port 5000 available to the world outside this container
+
+# Step 6: Make port 5000 available to the world outside this container
 EXPOSE 5000
 
-# Step 6: Define the environment variable for Flask app (pointing to app/app.py)
+# Step 7: Define the environment variable for Flask app (pointing to app/app.py)
 ENV FLASK_APP=app.py
 
-# Step 7: Run the Flask application
+# Step 8: Run the Flask application
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
