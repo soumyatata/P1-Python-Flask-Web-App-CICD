@@ -4,13 +4,11 @@ FROM python:3.12-slim
 # Step 2: Set the working directory inside the container
 WORKDIR /app
 
-# Step 3: Copy the requirements.txt file from the src directory of the host to the /app directory inside the container
-COPY src/* . 
+# Step 3: Copy the contents from the src directory of the host to the /app directory inside the container
+COPY src/ /app/
 
 # Step 4: Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-
-
 
 # Step 6: Make port 5000 available to the world outside this container
 EXPOSE 5000
