@@ -1,0 +1,18 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Virtual environment folder (if you're using one)
+venv/
+env/
+
+# .env file (for storing sensitive data like keys)
+.env
+
+
+# Operating system files (macOS, Windows, etc.)
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
