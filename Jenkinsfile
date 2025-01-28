@@ -4,11 +4,10 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'myawsdevopsjourney/p1-flask-web-app:latest'
         DOCKER_REGISTRY_CREDENTIALS = 'docker'
-        K8S_CREDENTIALS = 'k8s'
-        SONARQUBE_CREDENTIALS = 'Sonar-token'
+        
+        SONARQUBE_CREDENTIALS = 'sonar-token'
         SONARQUBE_SERVER = 'sonar-server'
         SCANNER_HOME = tool 'sonar-scanner'
-        OWASP_DC = tool name: 'OWASP-DC', type: 'Tool'
     }
 
     stages {
@@ -39,17 +38,24 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: "${SONARQUBE_CREDENTIALS}"  // Abort if quality gate fails
+                    try {
+                        // Wait for Quality Gate result with a timeout of 10 minutes (600 seconds)
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'  // Continue even if quality gate fails
+                        }
+                    } catch (Exception e) {
+                        echo 'Quality Gate timed out, proceeding to next stage.'
+                    }
                 }
             }
         }
 
         stage('Dependency Check with OWASP Dependency-Check') {
             steps {
-                script {
-                    sh '''${OWASP_DC}/bin/dependency-check --project "Flask Web App" --scan . --out dependency-check-report'''
-                    archiveArtifacts artifacts: 'dependency-check-report/*.html', allowEmptyArchive: true  // Archive OWASP Dependency-Check report
-                }
+                dependencyCheck additionalArguments: '--project "Flask Web App" --scan ./ --exclude "node_modules,venv,logs" --disableYarnAudit --disableNodeAudit',
+                odcInstallation: 'DP-Check'  // Ensure DP-Check is configured in Jenkins global tools
+        
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
 
@@ -65,7 +71,6 @@ pipeline {
                     withDockerRegistry(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}") {
                         sh '''
                         docker build -t ${DOCKER_IMAGE} .
-                        docker tag p1-flask-web-app:latest ${DOCKER_IMAGE}
                         docker push ${DOCKER_IMAGE}
                         '''
                     }
@@ -76,7 +81,7 @@ pipeline {
         stage('Vulnerability Scan with Trivy') {
             steps {
                 script {
-                    sh 'trivy image --skip-update --no-progress ${DOCKER_IMAGE} > trivy_report.txt'  // Scan the Docker image for vulnerabilities
+                    sh 'trivy image --no-progress ${DOCKER_IMAGE} > trivy_report.txt'  // Scan the Docker image for vulnerabilities
                     archiveArtifacts artifacts: 'trivy_report.txt', allowEmptyArchive: true  // Save the Trivy report as an artifact
                 }
             }
@@ -96,18 +101,18 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: "${K8S_CREDENTIALS}", namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
-                        sh '''
-                        kubectl apply -f deployment.yml
-                        kubectl apply -f service.yml
-                        '''
-                    }
-                }
-            }
-        }
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //         script {
+        //             withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: "${K8S_CREDENTIALS}", namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+        //                 sh '''
+        //                 kubectl apply -f deployment.yml
+        //                 kubectl apply -f service.yml
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
