@@ -33,12 +33,13 @@ ________________________________________
 ```
 **Step 4:** Install Jenkins Plugins
 
-o	Navigate to Manage Jenkins → Plugin Manager → Install: 
-o	SonarQube Scanner
-o	OWASP Dependency Check
-o	Docker Pipeline
-o	Pipeline Utility Steps
-o	Trivy Scanner
+Navigate to Manage Jenkins → Plugin Manager → Install: 
+
+o SonarQube Scanner
+o OWASP Dependency Check
+o Docker Pipeline
+o Pipeline Utility Steps
+o Trivy Scanner
 
 **Step 5:** Configure Sonar Server in Jenkins
 
@@ -46,9 +47,9 @@ Go to Manage Jenkins → Global Tool Configuration → SonarQube Scanner → Add
 
 **Step 6:** Create a Jenkins Pipeline
 
-    1️⃣ Go to Jenkins Dashboard → New Item → Pipeline.
+1️⃣ Go to Jenkins Dashboard → New Item → Pipeline.
 
-    2️⃣	Add the following pipeline script:
+2️⃣ Add the following pipeline script:
 
 ```bash
 
