@@ -59,12 +59,6 @@ pipeline {
             }
         }
 
-        // stage('Trivy FS Scan') {
-        //     steps {
-        //         sh "trivy fs . > trivyfs.txt"  // Scan filesystem for vulnerabilities (optional, based on app's needs)
-        //     }
-        // }
-
         stage('Build and Push Docker Image') {
             steps {
                 script {
@@ -100,19 +94,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Deploy to Kubernetes') {
-        //     steps {
-        //         script {
-        //             withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: "${K8S_CREDENTIALS}", namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
-        //                 sh '''
-        //                 kubectl apply -f deployment.yml
-        //                 kubectl apply -f service.yml
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
     }
 
     post {

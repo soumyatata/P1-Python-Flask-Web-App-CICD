@@ -1,5 +1,7 @@
-# **Flask Web App Deployment using Jenkins CI/CD Pipeline**
-🚀 Overview
+# 🚀**Flask Web App Deployment using Jenkins CI/CD Pipeline**
+
+## **Overview:**
+
 This project demonstrates a CI/CD pipeline for deploying a Flask web application using Jenkins, Docker, SonarQube, OWASP Dependency-Check, and Trivy. The pipeline automates testing, security scanning, Docker image building, and deployment.
 ________________________________________
 
@@ -36,9 +38,13 @@ ________________________________________
 Navigate to Manage Jenkins → Plugin Manager → Install: 
 
 o SonarQube Scanner
+
 o OWASP Dependency Check
+
 o Docker Pipeline
+
 o Pipeline Utility Steps
+
 o Trivy Scanner
 
 **Step 5:** Configure Sonar Server in Jenkins

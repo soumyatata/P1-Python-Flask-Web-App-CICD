@@ -11,7 +11,7 @@ def hello_world():
         <head><title>Welcome Page</title></head>
         <body>
             <h1>Welcome to My Page</h1>
-            <p>This is my FLASK WEB APP to deploy in AWS through GitHub Actions pipeline</p>
+            <p>This is my FLASK WEB APP to deploy in AWS through Jenkins pipeline</p>
         </body>
     </html>
     '''
