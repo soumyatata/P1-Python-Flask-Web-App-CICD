@@ -10,6 +10,7 @@ ________________________________________
 •	Configure security groups to allow Jenkins (8080), SonarQube (9000), and Flask App (5000).
 
 **Step 2:**  Install Jenkins, Docker, and Trivy
+
     ```bash
         sudo apt update && sudo apt upgrade -y
         sudo apt install -y openjdk-11-jdk docker.io
@@ -24,10 +25,12 @@ ________________________________________
     ```
 
 **Step 3:** Deploy SonarQube using Docker
+
     ```bash
         docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
     ```
 **Step 4:** Install Jenkins Plugins
+
     o	Navigate to Manage Jenkins → Plugin Manager → Install: 
     o	SonarQube Scanner
     o	OWASP Dependency Check
@@ -41,7 +44,9 @@ ________________________________________
 **Step 6:** Create a Jenkins Pipeline
     1️⃣ Go to Jenkins Dashboard → New Item → Pipeline.
     2️⃣	Add the following pipeline script:
+
     ```bash
+
         pipeline {
             agent any
 
@@ -119,6 +124,7 @@ ________________________________________
 ________________________________________
 
 📌 Key Tools & Technologies Used
+
 ✅ Jenkins - CI/CD automation
 ✅ Docker - Containerization
 ✅ SonarQube - Code quality analysis
@@ -127,7 +133,9 @@ ________________________________________
 ✅ AWS EC2 - Cloud deployment
 ________________________________________
 📢 Let's Connect!
+
 If you have any questions or suggestions, feel free to reach out. Contributions are welcome!
+
 🔗 GitHub: [PYTHON-FLASK-WEB-APP](https://github.com/soumyatata/p1-flask-aws-devops-pipeline)
 🔗 LinkedIn: [SoumyaTata](https://www.linkedin.com/in/t-soumya/)
 
