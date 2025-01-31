@@ -27,6 +27,34 @@ ________________________________________
         sudo apt update && sudo apt install -y jenkins
         sudo systemctl enable --now jenkins
 ```
+Once Jenkins installed access with EC2 with public IP address with 8080 port.
+On first login Username as 'admin' and for Password
+
+```bash
+    sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+Install Trivy
+
+```bash
+
+    sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+    echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+    sudo apt-get update
+    sudo apt-get install trivy -y
+    
+```
+Install Docker
+
+```bash
+    sudo apt-get update
+    sudo apt-get install docker.io -y
+    sudo usermod -aG docker $USER       
+    newgrp docker
+    sudo chmod 777 /var/run/docker.sock
+```
+
 
 **Step 3:** Deploy SonarQube using Docker
 
@@ -41,17 +69,39 @@ o SonarQube Scanner
 
 o OWASP Dependency Check
 
+o Docker
+
 o Docker Pipeline
 
-o Pipeline Utility Steps
+o Docker Commons
 
-o Trivy Scanner
+o Docker API
+
+
+Configure all tools that we install using Plugins, Go to Manage Jenkins → Tools → Add dependencies for Sonar, Docker, Dependency Check
+
 
 **Step 5:** Configure Sonar Server in Jenkins
 
-Go to Manage Jenkins → Global Tool Configuration → SonarQube Scanner → Add SonarQube Server Details.
+Grab the Public IP Address of your EC2 Instance, Sonarqube works on Port 9000, so <Public IP>:9000. Goto your Sonarqube Server. Click on Administration → Security → Users → Click on Tokens and Update Token → Give it a name → and click on Generate Token
 
-**Step 6:** Create a Jenkins Pipeline
+Now Copy Token , Goto Jenkins Dashboard → Manage Jenkins → Credentials → Add Secret Text → paste the token under Secret
+
+Now, go to Dashboard → Manage Jenkins → System → Add SonarQube Server Details.
+
+In the Sonarqube Dashboard add a quality gate also
+
+Administration → Configuration → Webhooks → Create
+
+#In url section of quality gate
+
+http://jenkins-public-ip:8080/sonarqube-webhook/
+
+**Step 6:** Add DockerHub Username and Password under Global Credentials
+
+Go to Dashboard → Manage Jenkins → Credentials → System → Global → Username with password
+
+**Step 7:** Create a Jenkins Pipeline
 
 1️⃣ Go to Jenkins Dashboard → New Item → Pipeline.
 
@@ -73,7 +123,7 @@ Go to Manage Jenkins → Global Tool Configuration → SonarQube Scanner → Add
             stages {
                 stage('Checkout Code') {
                     steps {
-                        git branch: 'main', url: 'https://github.com/soumyatata/p1-flask-aws-devops-pipeline.git'
+                        git branch: 'main', url: 'https://github.com/soumyatata/P1-Python-Flask-Web-App-CICD'
                     }
                 }
 
@@ -152,11 +202,12 @@ ________________________________________
 
 ✅ AWS EC2 - Cloud deployment
 ________________________________________
+
 📢 Let's Connect!
 
 If you have any questions or suggestions, feel free to reach out. Contributions are welcome!
 
-🔗 **GitHub:** [PYTHON-FLASK-WEB-APP](https://github.com/soumyatata/p1-flask-aws-devops-pipeline)
+🔗 **GitHub:** [PYTHON-FLASK-WEB-APP](https://github.com/soumyatata/P1-Python-Flask-Web-App-CICD)
 
 🔗 **LinkedIn:** [SoumyaTata](https://www.linkedin.com/in/t-soumya/)
 

@@ -19,7 +19,7 @@ pipeline {
 
         stage('Checkout code from GitHub') {
             steps {
-                git branch: 'main', url: 'https://github.com/soumyatata/p1-flask-aws-devops-pipeline.git'
+                git branch: 'main', url: 'https://github.com/soumyatata/P1-Python-Flask-Web-App-CICD'
             }
         }
 
